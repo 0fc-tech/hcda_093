@@ -1,6 +1,7 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:tp_cours/demo_mod6.dart';
 
 void main() {
   runApp(const MyApp());
@@ -32,21 +33,24 @@ class TwitterPage extends StatelessWidget {
         //backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         backgroundColor:Colors.lightBlue,
       ),
-      body: const Column(
+      body:  Column(
         children: [
           TopNavigationTwitter(),
-          Card(
-            clipBehavior: Clip.hardEdge,
-            child: Column(
-              children: [
-                Tweet(),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8.0),
-                  child: ButtonTweetBar(),
-                )
-              ],
-            ),
-          )
+          FutureBuilder<String>(
+            future: Future.delayed(Duration(seconds: 8),()=> ""),
+            builder: (context, snapshot) {
+              switch(snapshot.connectionState){
+                case ConnectionState.done:
+                  return Expanded(
+                      child: ListView.builder(
+                          itemCount: 10,
+                          itemBuilder: (context,index)=>TweetWithButtons())
+                  );
+                default : return CircularProgressIndicator();
+              }
+
+            }
+          ),
         ],
       ),
       bottomNavigationBar: const BottomNavigationTwitter(),
@@ -54,8 +58,31 @@ class TwitterPage extends StatelessWidget {
   }
 }
 
+class TweetWithButtons extends StatelessWidget {
+  const TweetWithButtons({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      clipBehavior: Clip.hardEdge,
+      child: Column(
+        children: [
+          Tweet(DateTime(2023,12,3,12,50,12)),
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 8.0),
+            child: ButtonTweetBar(),
+          )
+        ],
+      ),
+    );
+  }
+}
+
 class Tweet extends StatelessWidget {
-  const Tweet({
+  final DateTime dateTime;
+  Tweet(this.dateTime,{
     super.key,
   });
 
@@ -74,11 +101,12 @@ class Tweet extends StatelessWidget {
                   children: [
                     Text("LaCrevette@Chocolate",
                         style: Theme.of(context).textTheme.titleSmall),
-                    Text("50s",style: TextStyle(color: Colors.grey),),
+                    Text("${dateTime.minute}m",
+                      style: TextStyle(color: Colors.grey),),
                   ],
                 ),
-                SizedBox(height: 8,),
-                Text("latine euismod nulla mauris corrumpit scripserit unum causae justo pellentesque scripta justo ius elitr orci")
+                const SizedBox(height: 8,),
+                const Text("latine euismod nulla mauris corrumpit scripserit unum causae justo pellentesque scripta justo ius elitr orci")
               ],
             ),
           ),
@@ -95,7 +123,7 @@ class ButtonTweetBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return const Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         Text("Répondre"),
