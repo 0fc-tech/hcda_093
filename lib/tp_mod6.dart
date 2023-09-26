@@ -37,7 +37,7 @@ class TwitterPage extends StatelessWidget {
         children: [
           const TopNavigationTwitter(),
           FutureBuilder<String>(
-            future: Future.delayed(const Duration(seconds: 8),()=> ""),
+            future: Future.delayed(const Duration(seconds: 1),()=> ""),
             builder: (context, snapshot) {
               switch(snapshot.connectionState){
                 case ConnectionState.done:
@@ -46,13 +46,13 @@ class TwitterPage extends StatelessWidget {
                           itemCount: 10,
                           itemBuilder: (context,index)=>const TweetWithButtons())
                   );
-                default : return const CircularProgressIndicator();
+                default : return  const CircularProgressIndicator();
               }
             }
           ),
         ],
       ),
-      bottomNavigationBar: const BottomNavigationTwitter(),
+      bottomNavigationBar:  const BottomNavigationTwitter(),
     );
   }
 }
@@ -115,19 +115,47 @@ class Tweet extends StatelessWidget {
   }
 }
 
-class ButtonTweetBar extends StatelessWidget {
+class ButtonTweetBar extends StatefulWidget {
+
   const ButtonTweetBar({
     super.key,
   });
 
   @override
+  State<ButtonTweetBar> createState() => _ButtonTweetBarState();
+}
+
+class _ButtonTweetBarState extends State<ButtonTweetBar> {
+  bool _isLiked = false;
+  bool _isRT = false;
+  void _changeLike(){
+    //Je signale à Flutter que _ButtonTweetBarState est dirty et donc que l'on
+    //doit redéclencher un build().
+    setState(() {
+      _isLiked = !_isLiked;
+    });
+  }
+  void _changeRT(){
+    //Je signale à Flutter que _ButtonTweetBarState est dirty et donc que l'on
+    //doit redéclencher un build().
+    setState(() {
+      _isRT = !_isRT;
+    });
+  }
+  @override
   Widget build(BuildContext context) {
-    return const Row(
+    return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         Text("Répondre"),
-        Text("Retweet"),
-        Text("Favoris"),
+        _isRT ?
+          IconButton(icon: Icon(Icons.repeat, color: Colors.blue,),onPressed: ()=>_changeRT(),)
+            :
+          IconButton(icon: Icon(Icons.repeat),onPressed: ()=>_changeRT(),),
+        _isLiked ?
+          IconButton(icon: Icon(Icons.favorite, color: Colors.red,),onPressed: ()=>_changeLike(),)
+            :
+          IconButton(icon: Icon(Icons.favorite_border),onPressed: ()=>_changeLike(),)
       ],
     );
   }
