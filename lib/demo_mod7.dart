@@ -58,7 +58,9 @@ class _DemoFormWidgetState extends State<DemoFormWidget> {
                         return null;
                       },
                   ),
-                  Switch(value: rememberMe,onChanged: (isEnabled){
+                  Switch(
+
+                      value: rememberMe,onChanged: (isEnabled){
                     setState(() {
                       rememberMe = !rememberMe;
                     });
