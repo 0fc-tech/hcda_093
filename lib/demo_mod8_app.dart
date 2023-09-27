@@ -13,15 +13,31 @@ class MyApp extends StatelessWidget {
       routes: [
         GoRoute(
             path: '/',
-            builder: (context,state)=> const ConnexionPage(),
+            builder: (context,state)=> ConnexionPage(),
 
         ),
         GoRoute(
-          path: '/page2',
-          builder: (context,state)=> const SecondPage(),
+          path: '/page2/:email',
+          builder: (context,state)=> SecondPage(
+              state.pathParameters["email"] ?? ""
+          ),
         ),
-
-      ]
+        GoRoute(
+          path: '/page2',
+          builder: (context,state){
+            if(state.extra != null && state.extra is String) {
+              return SecondPage(
+                  state.extra as String
+              );
+            } else{
+              return SecondPage("");
+            }
+          }
+        ),
+      ],
+    errorBuilder: (context, state) => Scaffold(
+      body: Center(child: Text("Mhh... Ca ne sert à rien")),
+    ),
   );
 
   // This widget is the root of your application.
